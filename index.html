@@ -35,6 +35,7 @@ body {
   background: #fff;
   border-bottom: 1px solid rgba(0,0,0,0.1);
   flex-shrink: 0;
+  overflow: hidden;
 }
 
 #tab-title {
@@ -69,7 +70,7 @@ body {
 }
 
 #scatter-now {
-  margin-left: auto;
+  align-self: flex-start;
   background: #000;
   color: #fff;
   border: none;
@@ -84,6 +85,11 @@ body {
   transition: opacity 0.2s;
 }
 #scatter-now:hover { opacity: 0.75; }
+
+/* ── Mobile: hide instruction at small scale ── */
+@media (max-width: 600px) {
+  #tab-divider, #tab-instruction { display: none; }
+}
 
 #scatter-reset {
   margin-left: auto;
@@ -425,13 +431,21 @@ scatterReset.addEventListener('click', () => {
   ctx.clearRect(0, 0, CANVAS_W, CANVAS_H);
 });
 
-scatterCanvas.addEventListener('mousemove', e => {
+function pointerToCanvas(clientX, clientY) {
   const rect = scatterCanvas.getBoundingClientRect();
   const scaleX = CANVAS_W / rect.width;
-  mouseX = (e.clientX - rect.left) * scaleX;
-  mouseY = (e.clientY - rect.top) * scaleX;
-});
+  mouseX = (clientX - rect.left) * scaleX;
+  mouseY = (clientY - rect.top) * scaleX;
+}
+
+scatterCanvas.addEventListener('mousemove', e => pointerToCanvas(e.clientX, e.clientY));
 scatterCanvas.addEventListener('mouseleave', () => { mouseX = -9999; mouseY = -9999; });
+
+scatterCanvas.addEventListener('touchmove', e => {
+  e.preventDefault();
+  pointerToCanvas(e.touches[0].clientX, e.touches[0].clientY);
+}, { passive: false });
+scatterCanvas.addEventListener('touchend', () => { mouseX = -9999; mouseY = -9999; });
 
 function initScatter(text) {
   scatterOverlay.classList.add('hidden');
