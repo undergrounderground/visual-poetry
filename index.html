@@ -68,6 +68,23 @@ body {
   flex-shrink: 0;
 }
 
+#scatter-now {
+  margin-left: auto;
+  background: #000;
+  color: #fff;
+  border: none;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  padding: 8px 16px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: opacity 0.2s;
+}
+#scatter-now:hover { opacity: 0.75; }
+
 #scatter-reset {
   margin-left: auto;
   background: #000;
@@ -136,6 +153,8 @@ body {
   letter-spacing: 0.01em;
 }
 #scatter-textarea::placeholder { color: rgba(0,0,0,0.2); }
+
+#scatter-overlay { gap: 24px; }
 </style>
 </head>
 <body>
@@ -153,6 +172,7 @@ body {
     <canvas id="scatter-canvas"></canvas>
     <div id="scatter-overlay">
       <textarea id="scatter-textarea" placeholder="Paste or type any text…" spellcheck="false"></textarea>
+      <button id="scatter-now">Scatter Now</button>
     </div>
   </div>
 
@@ -385,6 +405,13 @@ scatterTextarea.addEventListener('input', () => {
     const text = scatterTextarea.value.trim();
     if (text) initScatter(text);
   }, 3000);
+});
+
+document.getElementById('scatter-now').addEventListener('click', () => {
+  clearTimeout(scatterTimer);
+  scatterCountdown.textContent = '';
+  const text = scatterTextarea.value.trim();
+  if (text) initScatter(text);
 });
 
 scatterReset.addEventListener('click', () => {
